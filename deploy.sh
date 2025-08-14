@@ -168,6 +168,6 @@ case "${1:-}" in
         echo "Example: $0 build     # Create production build"
         echo ""
         echo "For more information, visit:"
-        echo "https://github.com/yourusername/nansen-points-lucky-draw"
+        echo "https://github.com/askeluv/nansen-points-lucky-draw"
         ;;
 esac

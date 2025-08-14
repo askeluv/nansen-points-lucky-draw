@@ -358,9 +358,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Console Logs**: Check browser console for errors
 
 ### Contact Information
-- **Repository**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Documentation**: [Project Wiki](https://github.com/your-repo/wiki)
-- **Community**: [Discussions](https://github.com/your-repo/discussions)
+- **Repository**: [GitHub Issues](https://github.com/askeluv/nansen-points-lucky-draw/issues)
+- **Documentation**: [Project Wiki](https://github.com/askeluv/nansen-points-lucky-draw/wiki)
+- **Community**: [Discussions](https://github.com/askeluv/nansen-points-lucky-draw/discussions)
 
 ---
 
