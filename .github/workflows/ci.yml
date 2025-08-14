@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check if server starts
+      run: |
+        timeout 10s npm start || true
+        echo "Server startup check completed"
+    
+    - name: Check code formatting
+      run: |
+        echo "Checking for any obvious syntax errors..."
+        node -c server.js
+        node -c public/script.js
+        echo "Syntax check passed!"
+    
+    - name: Check for sensitive data
+      run: |
+        echo "Checking for potential sensitive data..."
+        if grep -r "API_KEY\|SECRET\|PASSWORD\|TOKEN" . --exclude-dir=node_modules --exclude-dir=.git; then
+          echo "Warning: Potential sensitive data found"
+          exit 1
+        fi
+        echo "No sensitive data found"

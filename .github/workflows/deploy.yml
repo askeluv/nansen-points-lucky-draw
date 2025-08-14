@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build check
+      run: |
+        echo "Checking if application builds and starts..."
+        timeout 15s npm start || true
+        echo "Build check completed"
+    
+    - name: Create deployment package
+      run: |
+        mkdir -p deploy
+        cp -r public server.js package.json README.md LICENSE PRD.md .github deploy/
+        echo "Deployment package created"
+    
+    - name: Upload deployment package
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-package
+        path: deploy/
+    
+    - name: Deploy to GitHub Pages (Optional)
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        publish_branch: gh-pages

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nansen Points Lucky Draw</title>
+    <meta name="description" content="A fair and transparent lucky draw system based on Nansen Points balance">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title">
+                🎯 Nansen Points Lucky Draw
+            </h1>
+            <div class="header__status">
+                <span class="status-indicator" id="apiStatus">
+                    <span class="status-dot"></span>
+                    Checking API...
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Lucky Draw Section -->
+            <section class="lucky-draw" aria-labelledby="lucky-draw-title">
+                <div class="lucky-draw__content">
+                    <h2 id="lucky-draw-title" class="lucky-draw__title">
+                        🎲 Ready to Draw?
+                    </h2>
+                    <p class="lucky-draw__description">
+                        Click the button below to run a fair weighted random selection based on Nansen Points balance.
+                    </p>
+                    
+                    <!-- Chain Toggle -->
+                    <div class="chain-toggle">
+                        <button class="chain-toggle__btn chain-toggle__btn--evm active" 
+                                data-chain="evm" 
+                                aria-pressed="true"
+                                aria-label="Show EVM chain participants">
+                            🔗 EVM
+                        </button>
+                        <button class="chain-toggle__btn chain-toggle__btn--solana" 
+                                data-chain="solana"
+                                aria-pressed="false"
+                                aria-label="Show Solana chain participants">
+                            ☀️ Solana
+                        </button>
+                    </div>
+
+                    <!-- Lucky Draw Button -->
+                    <button class="lucky-draw__btn" id="luckyDrawBtn" aria-describedby="lucky-draw-description">
+                        <span class="btn-text">🎯 Run Lucky Draw</span>
+                        <span class="btn-loading" style="display: none;">
+                            <div class="loading-animation">
+                                <div class="cycling-addresses">
+                                    <span class="address-cycler">🎯</span>
+                                </div>
+                                <div class="loading-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                                <div class="loading-text">Running Lucky Draw...</div>
+                            </div>
+                        </span>
+                    </button>
+
+                    <!-- Winner Display -->
+                    <div class="winner-display" id="winnerDisplay" style="display: none;">
+                        <div class="winner-announcement">
+                            <h3 class="winner-title">🎉 Winner Selected!</h3>
+                            <div class="winner-info">
+                                <div class="winner-address" id="winnerAddress"></div>
+                                <div class="winner-details">
+                                    <span class="winner-points" id="winnerPoints"></span>
+                                    <span class="winner-tier" id="winnerTier"></span>
+                                </div>
+                            </div>
+                            <div class="winner-stats">
+                                <div class="stat">
+                                    <span class="stat-label">Win Probability:</span>
+                                    <span class="stat-value" id="winProbability"></span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Total Participants:</span>
+                                    <span class="stat-value" id="totalParticipants"></span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Chain:</span>
+                                    <span class="stat-value" id="chainType"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leaderboard Section -->
+            <section class="leaderboard" aria-labelledby="leaderboard-title">
+                <div class="leaderboard__header">
+                    <h2 id="leaderboard-title" class="leaderboard__title">
+                        📊 Points Leaderboard
+                    </h2>
+                    <div class="leaderboard__controls">
+                        <button class="refresh-btn" id="refreshBtn" aria-label="Refresh leaderboard data">
+                            🔄 Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="leaderboard__loading" id="leaderboardLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading leaderboard data...</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="leaderboard__error" id="leaderboardError" style="display: none;">
+                    <p>❌ Failed to load leaderboard data. Please try again.</p>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="leaderboard__table-container" id="leaderboardTable" style="display: none;">
+                    <table class="leaderboard__table" role="table" aria-label="Nansen Points Leaderboard">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="table-header table-header--rank">Rank</th>
+                                <th scope="col" class="table-header table-header--address">Address</th>
+                                <th scope="col" class="table-header table-header--points">Points</th>
+                                <th scope="col" class="table-header table-header--tier">Tier</th>
+                                <th scope="col" class="table-header table-header--probability">Win Probability</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div class="leaderboard__empty" id="leaderboardEmpty" style="display: none;">
+                    <p>No participants found for the selected chain.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Nansen Points Lucky Draw. Built with ❤️ for the crypto community.</p>
+        </div>
+    </footer>
+
+    <!-- Confetti Container -->
+    <div id="confettiContainer" class="confetti-container"></div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
+
